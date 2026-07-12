@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>COUNT — An Editorial Counter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,400..700&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#f2ece0; --paper-2:#e9e1d2;
+    --ink:#16130d; --ink-soft:#4a453b;
+    --accent:#e5432b; --accent-ink:#b8321e;
+    --line:#16130d;
+    --hair:rgba(22,19,13,.18);
+    --serif:'Fraunces',Georgia,serif;
+    --grotesk:'Archivo',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--grotesk);color:var(--ink);
+    background:var(--paper);
+    background-image:
+      linear-gradient(var(--hair) 1px,transparent 1px),
+      linear-gradient(90deg,var(--hair) 1px,transparent 1px);
+    background-size:34px 34px;
+    min-height:100%;display:grid;place-items:center;
+    padding:clamp(16px,4vw,54px);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  }
+  /* paper grain */
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.06;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
+
+  .sheet{
+    width:min(680px,100%);background:var(--paper);
+    border:2px solid var(--ink);
+    box-shadow:12px 12px 0 var(--ink), 0 0 0 1px var(--ink);
+    padding:clamp(20px,3.6vw,40px);position:relative;
+    opacity:0;transform:translateY(16px);animation:in .7s cubic-bezier(.2,.9,.2,1) forwards;
+  }
+  @keyframes in{to{opacity:1;transform:none}}
+  .sheet::before{content:"";position:absolute;top:8px;left:8px;right:-2px;bottom:-2px;border:1px solid var(--hair);pointer-events:none}
+
+  header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .masthead{font-family:var(--serif);font-weight:600;font-size:clamp(18px,3vw,24px);letter-spacing:-.01em}
+  .masthead em{font-style:italic;font-weight:400;color:var(--ink-soft);font-size:.7em}
+  .issue{font-size:11px;letter-spacing:.18em;font-weight:700;text-transform:uppercase}
+  .issue b{color:var(--accent)}
+
+  .rule{border:none;border-top:2px solid var(--ink);margin:14px 0}
+  .rule.hair{border-top:1px solid var(--hair)}
+  .rule.thick{border-top:6px solid var(--ink);margin:16px 0}
+
+  .hero{display:grid;grid-template-columns:1fr auto;gap:clamp(14px,3vw,30px);align-items:center;margin:6px 0 4px}
+  .numwrap{position:relative;overflow:hidden}
+  .kicker{font-size:11px;letter-spacing:.26em;text-transform:uppercase;font-weight:700;color:var(--accent);margin-bottom:-.1em}
+  .num{
+    font-family:var(--serif);font-optical-sizing:auto;font-weight:600;
+    font-size:clamp(96px,26vw,220px);line-height:.82;letter-spacing:-.04em;
+    font-variant-numeric:tabular-nums;
+    transform-origin:left center;
+  }
+  .num.stamp{animation:stamp .34s cubic-bezier(.2,1.3,.35,1)}
+  @keyframes stamp{
+    0%{transform:scale(1.14) translateY(2px);filter:blur(.6px)}
+    45%{transform:scale(.985)}
+    100%{transform:none;filter:none}
+  }
+  /* registration ghost */
+  .num::after{content:attr(data-v);position:absolute;left:0;top:0;color:var(--accent);
+    mix-blend-mode:multiply;opacity:0}
+  .num.stamp::after{animation:ghost .34s ease}
+  @keyframes ghost{0%{opacity:.5;transform:translate(3px,-2px)}100%{opacity:0;transform:none}}
+
+  .meta{display:flex;flex-direction:column;gap:0;min-width:118px;border-left:2px solid var(--ink);padding-left:16px}
+  .metrow{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:1px solid var(--hair);
+    font-size:12px;letter-spacing:.08em}
+  .metrow span{color:var(--ink-soft);font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.16em}
+  .metrow b{font-family:var(--serif);font-weight:600;font-size:18px}
+  .metrow.status b{font-family:var(--grotesk);font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+  .metrow.status b.warn{color:var(--accent)}
+
+  /* ruler */
+  .ruler{margin:6px 0 2px}
+  .track{position:relative;height:30px;border:2px solid var(--ink);background:var(--paper-2);overflow:hidden}
+  .track .ticks{position:absolute;inset:0;
+    background-image:repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 24px);opacity:.22}
+  .track .prog{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent);mix-blend-mode:multiply;
+    transition:width .4s cubic-bezier(.2,.9,.2,1)}
+  .track .needle{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--ink);left:0;
+    transition:left .4s cubic-bezier(.2,.9,.2,1)}
+  .track .needle::after{content:"";position:absolute;top:-2px;left:-4px;border:5px solid transparent;border-top-color:var(--ink)}
+
+  .controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .controls .full{grid-column:1 / -1}
+  button.act{
+    font-family:var(--grotesk);cursor:pointer;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+    font-size:14px;padding:18px 16px;background:var(--paper);color:var(--ink);
+    border:2px solid var(--ink);box-shadow:5px 5px 0 var(--ink);
+    transition:transform .08s,box-shadow .08s,background .15s,color .15s;-webkit-tap-highlight-color:transparent}
+  button.act:hover{background:var(--ink);color:var(--paper)}
+  button.act:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--ink)}
+  button.accent{background:var(--accent);border-color:var(--ink);color:var(--paper);box-shadow:5px 5px 0 var(--ink)}
+  button.accent:hover{background:var(--accent-ink);color:var(--paper)}
+  button.ghost{box-shadow:none;border-style:dashed}
+  button.ghost:hover{background:var(--ink);color:var(--paper)}
+  button.act:disabled{opacity:.35;cursor:not-allowed;box-shadow:none;transform:none;background:var(--paper);color:var(--ink)}
+
+  .config{display:grid;grid-template-columns:repeat(3,1fr) auto;gap:16px;align-items:end}
+  .fld label{display:block;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--ink-soft);margin-bottom:4px}
+  .fld input[type=number]{width:100%;font-family:var(--serif);font-weight:600;font-size:20px;color:var(--ink);
+    background:transparent;border:none;border-bottom:2px solid var(--ink);padding:4px 2px;outline:none}
+  .fld input:focus{border-color:var(--accent)}
+  .fld input::-webkit-inner-spin-button{opacity:.5}
+
+  .toggle{display:flex;flex-direction:column;gap:4px}
+  .toggle>span{font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--ink-soft)}
+  .chk{position:relative;display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+  .chk input{position:absolute;opacity:0}
+  .box{width:26px;height:26px;border:2px solid var(--ink);background:var(--paper);display:grid;place-items:center;transition:background .15s}
+  .box::after{content:"✕";font-weight:800;font-size:15px;color:var(--paper);opacity:0;transition:opacity .12s;line-height:1}
+  .chk input:checked + .box{background:var(--accent)}
+  .chk input:checked + .box::after{opacity:1}
+  .chk .lbl{font-size:12px;font-weight:700;letter-spacing:.04em}
+
+  footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:center;margin-top:4px;
+    font-size:11px;letter-spacing:.1em;color:var(--ink-soft)}
+  .keys{display:flex;gap:6px;flex-wrap:wrap}
+  .kbd{border:1.5px solid var(--ink);padding:3px 8px;font-weight:700;font-size:11px;background:var(--paper);box-shadow:2px 2px 0 var(--ink)}
+  .colophon{font-family:var(--serif);font-style:italic}
+
+  .stagger>*{opacity:0;transform:translateY(8px);animation:up .55s ease forwards}
+  .stagger>*:nth-child(1){animation-delay:.12s}.stagger>*:nth-child(2){animation-delay:.18s}
+  .stagger>*:nth-child(3){animation-delay:.26s}.stagger>*:nth-child(4){animation-delay:.34s}
+  .stagger>*:nth-child(5){animation-delay:.42s}.stagger>*:nth-child(6){animation-delay:.5s}
+  .stagger>*:nth-child(7){animation-delay:.58s}.stagger>*:nth-child(8){animation-delay:.64s}
+  @keyframes up{to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.sheet,.stagger>*{opacity:1;transform:none}}
+
+  @media (max-width:560px){
+    .hero{grid-template-columns:1fr}
+    .meta{border-left:none;border-top:2px solid var(--ink);padding-left:0;padding-top:10px}
+    .config{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="stagger">
+      <header>
+        <div class="masthead">COUNT — <em>an editorial counter</em></div>
+        <div class="issue">Nº <b id="issue">000</b> / VOL. 1</div>
+      </header>
+      <hr class="rule thick" />
+
+      <div class="hero">
+        <div>
+          <div class="kicker">Current Reading</div>
+          <div class="numwrap"><div class="num" id="num" data-v="0" aria-live="polite">0</div></div>
+        </div>
+        <aside class="meta">
+          <div class="metrow"><span>Min</span><b id="minLbl">0</b></div>
+          <div class="metrow"><span>Max</span><b id="maxLbl">100</b></div>
+          <div class="metrow"><span>Step</span><b id="stepLbl">1</b></div>
+          <div class="metrow status"><span>State</span><b id="stateLbl">Ready</b></div>
+        </aside>
+      </div>
+
+      <div class="ruler">
+        <div class="track"><div class="ticks"></div><div class="prog" id="prog"></div><div class="needle" id="needle"></div></div>
+      </div>
+
+      <hr class="rule" />
+      <section class="controls">
+        <button class="act" id="dec">Decrease</button>
+        <button class="act accent" id="inc">Increase</button>
+        <button class="act ghost full" id="reset">Reset → 0</button>
+      </section>
+
+      <hr class="rule" />
+      <section class="config">
+        <div class="fld"><label for="step">Step</label><input id="step" type="number" min="1" value="1" /></div>
+        <div class="fld"><label for="min">Minimum</label><input id="min" type="number" value="0" /></div>
+        <div class="fld"><label for="max">Maximum</label><input id="max" type="number" value="100" /></div>
+        <div class="toggle"><span>Floor @ 0</span>
+          <label class="chk"><input id="floor" type="checkbox" checked /><span class="box"></span><span class="lbl">On</span></label>
+        </div>
+      </section>
+
+      <footer>
+        <div class="keys">
+          <span class="kbd">▲/+</span><span class="kbd">▼/−</span><span class="kbd">R</span>
+        </div>
+        <div class="colophon">Set in Fraunces &amp; Archivo · persists locally</div>
+      </footer>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const KEY = 'tally01.editorial';
+  const $ = (id) => document.getElementById(id);
+  const els = { num:$('num'), inc:$('inc'), dec:$('dec'), reset:$('reset'),
+    step:$('step'), min:$('min'), max:$('max'), floor:$('floor'),
+    minLbl:$('minLbl'), maxLbl:$('maxLbl'), stepLbl:$('stepLbl'), stateLbl:$('stateLbl'),
+    prog:$('prog'), needle:$('needle'), issue:$('issue') };
+
+  const DEFAULT = { count:0, step:1, min:0, max:100, floorAtZero:true };
+  let s = load();
+
+  function load(){ try{ const v=JSON.parse(localStorage.getItem(KEY)); if(v&&typeof v==='object') return {...DEFAULT,...v}; }catch{} return {...DEFAULT}; }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch{} }
+
+  const effMin = () => s.floorAtZero ? Math.max(0, s.min) : s.min;
+  const clamp = (v) => Math.min(s.max, Math.max(effMin(), v));
+
+  function stamp(){ els.num.classList.remove('stamp'); void els.num.offsetWidth; els.num.classList.add('stamp'); }
+
+  function paint(){
+    const val = clamp(s.count);
+    els.num.textContent = val; els.num.dataset.v = val;
+    els.issue.textContent = String(Math.abs(val)).padStart(3,'0');
+    els.minLbl.textContent = effMin(); els.maxLbl.textContent = s.max; els.stepLbl.textContent = s.step;
+
+    const lo=effMin(), hi=s.max, span=hi-lo;
+    const pct = span>0 ? ((val-lo)/span)*100 : 0;
+    const cl = Math.max(0,Math.min(100,pct));
+    els.prog.style.width = cl+'%'; els.needle.style.left = cl+'%';
+
+    const atMax = val>=hi, atMin = val<=lo;
+    els.inc.disabled = atMax || span<=0; els.dec.disabled = atMin || span<=0;
+    const st = span<=0 ? 'Range Err' : atMax ? 'At Max' : atMin ? 'At Min' : 'Counting';
+    els.stateLbl.textContent = st; els.stateLbl.classList.toggle('warn', atMax||atMin||span<=0);
+  }
+  function setCount(v){ const nv=clamp(v); if(nv!==s.count) stamp(); s.count=nv; paint(); save(); }
+  const inc=()=>setCount(s.count+s.step), dec=()=>setCount(s.count-s.step), reset=()=>setCount(0);
+
+  const num=(el,f)=>{ const v=parseInt(el.value,10); return Number.isFinite(v)?v:f; };
+  const syncInputs=()=>{ els.step.value=s.step; els.min.value=s.min; els.max.value=s.max; els.floor.checked=s.floorAtZero;
+    els.floor.closest('.chk').querySelector('.lbl').textContent = s.floorAtZero?'On':'Off'; };
+
+  els.inc.addEventListener('click', inc);
+  els.dec.addEventListener('click', dec);
+  els.reset.addEventListener('click', reset);
+  els.step.addEventListener('change', ()=>{ s.step=Math.max(1,num(els.step,1)); syncInputs(); paint(); save(); });
+  function applyBounds(){ const nmin=num(els.min,s.min), nmax=num(els.max,s.max);
+    if(nmax>=nmin){ s.min=nmin; s.max=nmax; s.count=clamp(s.count); } syncInputs(); paint(); save(); }
+  els.min.addEventListener('change', applyBounds);
+  els.max.addEventListener('change', applyBounds);
+  els.floor.addEventListener('change', ()=>{ s.floorAtZero=els.floor.checked; s.count=clamp(s.count); syncInputs(); paint(); save(); });
+
+  const typing=()=>['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName);
+  window.addEventListener('keydown',(e)=>{ if(typing()) return;
+    if(e.key==='ArrowUp'||e.key==='+'||e.key==='='){ e.preventDefault(); if(!els.inc.disabled) inc(); }
+    else if(e.key==='ArrowDown'||e.key==='-'||e.key==='_'){ e.preventDefault(); if(!els.dec.disabled) dec(); }
+    else if(e.key==='r'||e.key==='R'){ reset(); }
+  });
+
+  syncInputs(); paint();
+})();
+</script>
+</body>
+</html>

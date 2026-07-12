@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Counter — UI Design Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{--bg:#111014;--card:#1a191f;--ink:#f4f0e8;--soft:#a09aa8;--line:#2e2c36;--accent:#f4a838;--accent2:#e5432b}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Spline Sans Mono',ui-monospace,monospace;background:
+    radial-gradient(120% 80% at 50% -10%,#1d1b24,var(--bg));color:var(--ink);min-height:100vh;
+    padding:clamp(24px,6vw,80px);display:flex;flex-direction:column;gap:clamp(28px,5vw,54px);-webkit-font-smoothing:antialiased}
+  header{max-width:900px}
+  .eyebrow{font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--accent)}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(34px,7vw,64px);line-height:1;letter-spacing:-.02em;margin:.35em 0 .3em}
+  header p{color:var(--soft);max-width:60ch;font-size:14px;line-height:1.7}
+  header p b{color:var(--ink)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(18px,3vw,28px);max-width:1000px}
+  a.card{position:relative;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--line);
+    border-radius:20px;padding:26px;display:flex;flex-direction:column;gap:16px;overflow:hidden;
+    transition:transform .25s cubic-bezier(.2,.9,.2,1),border-color .25s,box-shadow .25s}
+  a.card:hover{transform:translateY(-6px);border-color:var(--accent);box-shadow:0 24px 50px -20px rgba(0,0,0,.7)}
+  .swatch{height:120px;border-radius:12px;position:relative;overflow:hidden;display:grid;place-items:center;
+    font-family:'Fraunces',serif;font-size:56px;font-weight:600}
+  .swatch.a{background:radial-gradient(120% 140% at 50% 0%,#17130c,#0a0906);color:#ffce8a;
+    text-shadow:0 0 18px rgba(244,168,56,.6);border:1px solid #000}
+  .swatch.b{background:#f2ece0;color:#16130d;border:2px solid #16130d}
+  .swatch.b .rd{position:absolute;bottom:10px;right:12px;width:34px;height:8px;background:var(--accent2)}
+  .num{font-size:11px;letter-spacing:.28em;color:var(--soft);text-transform:uppercase}
+  h2{font-family:'Fraunces',serif;font-weight:600;font-size:24px;letter-spacing:-.01em}
+  .desc{color:var(--soft);font-size:13px;line-height:1.65}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto}
+  .tag{font-size:10.5px;letter-spacing:.08em;padding:4px 9px;border:1px solid var(--line);border-radius:20px;color:var(--soft)}
+  .go{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  a.card.b:hover{border-color:var(--accent2)} a.card.b .go{color:var(--accent2)}
+  footer{color:var(--soft);font-size:12px;letter-spacing:.06em;max-width:900px;line-height:1.7}
+  footer code{color:var(--ink);background:#000;padding:2px 6px;border-radius:5px}
+</style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">Counter · UI Design</div>
+    <h1>Two directions,<br/>one counter.</h1>
+    <p>Both prototypes implement the full <b>feature.md</b> spec — increment/decrement by step, reset,
+    min/max bounds with disabled limits, floor-at-zero, keyboard shortcuts, and <b>localStorage</b>
+    persistence. Click either to try it for real, then pick a direction to build in Next.js.</p>
+  </header>
+
+  <div class="grid">
+    <a class="card a" href="instrument.html">
+      <div class="swatch a">08</div>
+      <div class="num">Direction A</div>
+      <h2>TALLY.01</h2>
+      <div class="desc">A dark tactile <b>precision instrument</b>. Mechanical odometer roll on the digits,
+      amber phosphor glow, depressible chunky buttons, live range gauge, engraved labels.</div>
+      <div class="tags"><span class="tag">Dark</span><span class="tag">Retro-industrial</span><span class="tag">Odometer</span><span class="tag">Oxanium</span></div>
+      <span class="go">Open prototype →</span>
+    </a>
+
+    <a class="card b" href="editorial.html">
+      <div class="swatch b">08<span class="rd"></span></div>
+      <div class="num">Direction B</div>
+      <h2>COUNT · Editorial</h2>
+      <div class="desc">A light <b>Swiss-brutalist editorial</b> sheet. Giant high-contrast Fraunces numeral,
+      hard grid rules, one risograph-red accent, ink-stamp transitions, a printed ruler gauge.</div>
+      <div class="tags"><span class="tag">Light</span><span class="tag">Editorial</span><span class="tag">Serif</span><span class="tag">Fraunces</span></div>
+      <span class="go">Open prototype →</span>
+    </a>
+  </div>
+
+  <footer>
+    Files live in <code>ui_design/</code>. These are self-contained static prototypes (HTML/CSS/JS) for
+    evaluating aesthetic direction — the production build follows <code>ARCHITECTURE.md</code>.
+  </footer>
+</body>
+</html>
