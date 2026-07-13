@@ -19,7 +19,7 @@
 ## 4. E2E test runner (Playwright)
 
 - [x] 4.1 Install Playwright and its browsers
-- [ ] 4.2 Add `playwright.config.*` scoped to `e2e/**`, with a `webServer` that starts the app (generous timeout, `reuseExistingServer` locally)
+- [x] 4.2 Add `playwright.config.*` scoped to `e2e/**`, with a `webServer` that starts the app (generous timeout, `reuseExistingServer` locally)
 - [ ] 4.3 Add `e2e/smoke.spec.ts` that loads `/` and asserts the placeholder renders; confirm `npm run test:e2e` passes
 
 ## 5. Onion-layer skeleton and placeholder page
