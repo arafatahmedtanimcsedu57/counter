@@ -18,7 +18,7 @@
 
 ## 4. E2E test runner (Playwright)
 
-- [ ] 4.1 Install Playwright and its browsers
+- [x] 4.1 Install Playwright and its browsers
 - [ ] 4.2 Add `playwright.config.*` scoped to `e2e/**`, with a `webServer` that starts the app (generous timeout, `reuseExistingServer` locally)
 - [ ] 4.3 Add `e2e/smoke.spec.ts` that loads `/` and asserts the placeholder renders; confirm `npm run test:e2e` passes
 
