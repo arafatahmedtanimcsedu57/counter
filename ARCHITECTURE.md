@@ -4,21 +4,21 @@
 
 A single-screen counter built with **Next.js (App Router)**, structured with **onion (clean)
 architecture**. The product is deliberately tiny (see `feature.md`) — the point of this repo is to
-demonstrate a clean, testable, SSR-safe architecture on a domain small enough that the *structure*
+demonstrate a clean, testable, SSR-safe architecture on a domain small enough that the _structure_
 is the thing on display, not the problem. The layers keep the business rules (stepping, reset,
 step-coercion) testable in isolation and independent of React, Next.js, and the browser.
 
 **Stack**
 
-| Concern        | Choice                                             |
-| -------------- | -------------------------------------------------- |
-| Framework      | Next.js 15 (App Router) + React 19                 |
-| Language       | TypeScript (`strict: true`, no `any`)              |
-| Styling        | Tailwind CSS                                       |
-| Client state   | Zustand + `persist` (localStorage) + `devtools`    |
-| Unit tests     | Vitest + React Testing Library                     |
-| E2E tests      | Playwright                                         |
-| Lint / format  | ESLint (next) + Prettier                           |
+| Concern       | Choice                                          |
+| ------------- | ----------------------------------------------- |
+| Framework     | Next.js 15 (App Router) + React 19              |
+| Language      | TypeScript (`strict: true`, no `any`)           |
+| Styling       | Tailwind CSS                                    |
+| Client state  | Zustand + `persist` (localStorage) + `devtools` |
+| Unit tests    | Vitest + React Testing Library                  |
+| E2E tests     | Playwright                                      |
+| Lint / format | ESLint (next) + Prettier                        |
 
 ## 2. Architecture Principles
 
@@ -109,6 +109,7 @@ e2e/
 ## 4. Layer Responsibilities
 
 ### Domain (`src/domain/counter/`)
+
 Pure, framework-free heart of the app.
 
 ```ts
@@ -130,6 +131,7 @@ All functions are total, side-effect-free, and return **new** state objects (imm
 is unbounded — it may go negative; there are intentionally no min/max bounds.
 
 ### Application (`src/application/`)
+
 Thin orchestration over Domain; still no React/browser.
 
 - **use-cases/** — one function per operation, e.g.
@@ -142,6 +144,7 @@ Thin orchestration over Domain; still no React/browser.
 - **dto/** — `PersistedCounter` is the serialized shape written to storage (with `version`).
 
 ### Infrastructure (`src/infrastructure/`)
+
 Implements ports; the only place that touches the browser.
 
 - `local-counter-storage.ts` implements `CounterStoragePort` over `window.localStorage`,
@@ -149,6 +152,7 @@ Implements ports; the only place that touches the browser.
 - `storage-keys.ts` centralizes the storage key and a `STORAGE_VERSION` for future migrations.
 
 ### Presentation (`app/`, `store/`, `hooks/`, `components/`)
+
 React/Next.js only. Composes UI and wires events to use cases via the store.
 
 ## 5. State Management — Zustand + persist
@@ -181,6 +185,7 @@ increment: () => set((s) => incrementCounter(s)),
 `STORAGE_VERSION` bumps.
 
 ### SSR / hydration strategy (Next.js App Router)
+
 Two problems, two fixes:
 
 1. **Cross-request leakage** — a module-level store is shared across requests on the server.
@@ -214,14 +219,15 @@ UI re-renders (updated count)
 
 ## 7. Feature → Layer Mapping
 
-| Feature            | Where it lives                                                       |
-| ------------------ | ------------------------------------------------------------------- |
-| Increment / Decr.  | `domain/rules` (± step) ← `application/use-cases` ← store action     |
-| Reset              | `domain/rules.reset` ← `resetCounter` use case                      |
-| Custom step        | `withStep` (domain, coerces to 1) ← `setStep` use case; `step-input.tsx` UI |
-| Persist            | `store` persist middleware → `infrastructure/local-counter-storage` |
+| Feature           | Where it lives                                                              |
+| ----------------- | --------------------------------------------------------------------------- |
+| Increment / Decr. | `domain/rules` (± step) ← `application/use-cases` ← store action            |
+| Reset             | `domain/rules.reset` ← `resetCounter` use case                              |
+| Custom step       | `withStep` (domain, coerces to 1) ← `setStep` use case; `step-input.tsx` UI |
+| Persist           | `store` persist middleware → `infrastructure/local-counter-storage`         |
 
 ## 8. TypeScript Conventions
+
 - `strict: true`; never `any` (use `unknown` + narrowing).
 - Props interface per component named `{Component}Props`; explicit return types on exported
   functions, hooks, and use cases; components return `React.ReactNode`.
@@ -231,6 +237,7 @@ UI re-renders (updated count)
 ## 9. Testing Strategy
 
 **Unit (Vitest + RTL)** — the pyramid's base sits in Domain/Application:
+
 - `domain/counter/rules.test.ts` — step math, reset leaves step unchanged, step coercion of
   empty/invalid input. Pure functions → fast, exhaustive.
 - `application/use-cases/*.test.ts` — input validation + delegation.
@@ -243,16 +250,22 @@ increment/decrement by step → reset → change step → **reload page and asse
 persisted**.
 
 ## 10. Tooling
+
 - **Tailwind** for styling (create-next-app default); design tokens via Tailwind theme.
 - **ESLint** (`next/core-web-vitals` + TS rules) and **Prettier**; a single `format`/`lint` script.
 - Suggested scripts: `dev`, `build`, `start`, `lint`, `format`, `test` (Vitest), `test:e2e`
   (Playwright).
 
 ## 11. Non-Goals / Future
+
 Kept intentionally out of scope to keep the product minimal (see `feature.md`):
+
 - Min/max bounds, floor-at-zero, keyboard shortcuts, animated count — deliberately excluded polish.
 - Multiple named counters (would generalize `CounterState` into a keyed collection).
 - Undo/redo (append a history reducer in Application).
 - Accounts / backend / server-side persistence (swap the `CounterStoragePort` implementation for an
   API repository — Domain/Application unchanged).
+
+```
+
 ```

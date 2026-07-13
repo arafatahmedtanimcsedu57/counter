@@ -17,9 +17,11 @@ Explicitly **out of scope**: any counter behavior (increment/decrement/reset/ste
 ## Capabilities
 
 ### New Capabilities
+
 - `project-scaffold`: the buildable Next.js App Router project and its verification toolchain — the app serves a page, and `lint`, `format`, `test`, and `test:e2e` are configured and pass on an empty baseline.
 
 ### Modified Capabilities
+
 <!-- None — no existing specs. -->
 
 ## Impact
