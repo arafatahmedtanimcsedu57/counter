@@ -31,4 +31,4 @@
 ## 6. Verify the baseline
 
 - [x] 6.1 Run all commands end to end — `dev` (manual check), `build`, `lint`, `format`, `test`, `test:e2e` — and confirm every one is green
-- [ ] 6.2 Record the resolved Next.js/React/Tailwind versions in `package.json` and update `CLAUDE.md`'s Commands section with the actual scripts
+- [x] 6.2 Record the resolved Next.js/React/Tailwind versions in `package.json` and update `CLAUDE.md`'s Commands section with the actual scripts
