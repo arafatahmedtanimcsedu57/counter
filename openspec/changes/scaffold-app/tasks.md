@@ -12,7 +12,7 @@
 
 ## 3. Unit test runner (Vitest + RTL)
 
-- [ ] 3.1 Install Vitest, `@testing-library/react` (≥16 for React 19), `@testing-library/jest-dom`, and jsdom
+- [x] 3.1 Install Vitest, `@testing-library/react` (≥16 for React 19), `@testing-library/jest-dom`, and jsdom
 - [ ] 3.2 Add `vitest.config.*` (jsdom env, `src/**/*.test.ts(x)` glob) and a test setup file
 - [ ] 3.3 Add a smoke unit test that renders the home page placeholder and asserts it appears; confirm `npm test` exits 0
 
