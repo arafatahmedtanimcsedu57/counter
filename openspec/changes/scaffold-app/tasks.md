@@ -8,7 +8,7 @@
 
 - [x] 2.1 Add Prettier + config and align ESLint (`next/core-web-vitals` + TS) to not conflict with Prettier
 - [x] 2.2 Add npm scripts: `dev`, `build`, `start`, `lint`, `format`, `test`, `test:e2e`
-- [ ] 2.3 Run `npm run lint` and `npm run format`; ensure both pass clean on the baseline
+- [x] 2.3 Run `npm run lint` and `npm run format`; ensure both pass clean on the baseline
 
 ## 3. Unit test runner (Vitest + RTL)
 

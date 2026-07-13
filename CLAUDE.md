@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 The app is **designed but not yet scaffolded**. There is no `package.json`, `src/`, or tooling — the `src/` tree and scripts in `ARCHITECTURE.md` describe the intended structure, not existing files. First implementation step is a Next.js scaffold (App Router, TypeScript, Tailwind).
 
 Documents of record:
+
 - `feature.md` — product spec (what the counter does): increment/decrement by step, reset, `localStorage` persistence of count + step, custom step with fallback to `1`.
 - `ARCHITECTURE.md` — the authoritative technical design (stack, layering, file layout, SSR strategy, testing). **Read it before writing app code**; don't restate or diverge from it here.
 
@@ -15,6 +16,7 @@ Documents of record:
 This repo uses **OpenSpec** (`openspec/config.yaml`, `schema: spec-driven`). Non-trivial work goes through a change proposal before implementation rather than straight to code. Layout: `openspec/specs/` = current capabilities, `openspec/changes/` = active proposals, `openspec/changes/archive/` = completed.
 
 Slash commands (backed by skills in `.claude/skills/openspec-*`):
+
 - `/opsx:explore` — think through an idea / clarify requirements before committing to a change.
 - `/opsx:propose` — create a change with design, specs, and tasks in one step.
 - `/opsx:apply` — implement the tasks of an existing change.

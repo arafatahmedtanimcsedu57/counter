@@ -7,6 +7,7 @@ Constraints come from `ARCHITECTURE.md`: Next.js 15 App Router, React 19, TypeSc
 ## Goals / Non-Goals
 
 **Goals:**
+
 - A buildable, servable Next.js App Router app with a placeholder home page.
 - Strict TypeScript with no `any`.
 - Tailwind wired into the global stylesheet.
@@ -16,6 +17,7 @@ Constraints come from `ARCHITECTURE.md`: Next.js 15 App Router, React 19, TypeSc
 - npm scripts: `dev`, `build`, `start`, `lint`, `format`, `test`, `test:e2e`.
 
 **Non-Goals:**
+
 - Any counter behavior (increment/decrement/reset/step) or persistence — later changes.
 - Zustand store, domain rules, use cases, or storage adapter (folders exist, code does not).
 - CI configuration, deployment, or a component library beyond what create-next-app provides.
