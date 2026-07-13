@@ -6,8 +6,6 @@ describe("Home", () => {
   it("renders the home page placeholder", () => {
     render(<Home />);
 
-    expect(
-      screen.getByText("To get started, edit the page.tsx file."),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Counter")).toBeInTheDocument();
   });
 });
