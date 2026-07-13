@@ -34,7 +34,15 @@ Full detail is in `ARCHITECTURE.md`; the cross-cutting rules that span multiple 
 
 ## Commands
 
-Not wired up yet — no `package.json`. Once scaffolded, `ARCHITECTURE.md` §10 calls for: `dev`, `build`, `start`, `lint`, `format`, `test` (Vitest + React Testing Library), `test:e2e` (Playwright). Update this section with the actual commands after scaffolding.
+Scaffolded with Next.js `16.2.10`, React `19.2.4`, Tailwind CSS `^4`, TypeScript `^5` (see `package.json` for exact resolved versions). npm scripts:
+
+- `npm run dev` — start the Next.js dev server
+- `npm run build` — production build
+- `npm run start` — serve the production build
+- `npm run lint` — ESLint (`eslint`)
+- `npm run format` — Prettier, write mode (`prettier --write .`)
+- `npm test` — Vitest unit tests (`vitest run`)
+- `npm run test:e2e` — Playwright e2e tests (`playwright test`)
 
 ## Constraints (non-goals)
 
