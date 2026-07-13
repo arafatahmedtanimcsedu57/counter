@@ -1,6 +1,6 @@
 ## 1. Bootstrap the Next.js project
 
-- [ ] 1.1 Run `create-next-app` non-interactively (App Router, TypeScript, Tailwind, ESLint, `src/` dir, `@/*` alias) into the repo root without clobbering existing docs/`openspec/`
+- [x] 1.1 Run `create-next-app` non-interactively (App Router, TypeScript, Tailwind, ESLint, `src/` dir, `@/*` alias) into the repo root without clobbering existing docs/`openspec/`
 - [ ] 1.2 Confirm `tsconfig.json` has `strict: true`; enable it if not
 - [ ] 1.3 Verify `npm run dev` serves `/` and `npm run build` succeeds
 
