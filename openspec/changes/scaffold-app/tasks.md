@@ -26,7 +26,7 @@
 
 - [x] 5.1 Create `src/{domain,application,infrastructure,store,hooks,components,lib}` with `.gitkeep` (no feature logic, no barrels yet)
 - [x] 5.2 Wire Tailwind into `src/app/globals.css` and replace the default home page with a minimal placeholder using at least one Tailwind utility
-- [ ] 5.3 Confirm the placeholder contains no counter behavior (increment/decrement/reset/step/persistence)
+- [x] 5.3 Confirm the placeholder contains no counter behavior (increment/decrement/reset/step/persistence)
 
 ## 6. Verify the baseline
 
